@@ -1,1 +1,3 @@
-Wz
+Esta é uma ferramenta de linha de comando para configurar o firewall em sistemas Linux que usam o serviço firewalld (firewall-cmd). A ferramenta é projetada para fornecer uma interface simplificada , útil para administradores de sistemas que desejam configurar rapidamente o firewall em seus servidores Linux, garantindo a segurança da rede e dos serviços executados neles. A ferramenta oferece suporte para sistemas Linux com firewalld, como Ubuntu, CentOS e RHEL.
+
+    Opções avançadas estão disponíveis para usuários familiarizados com os conceitos de configuração de firewall no Linux. O script é projetado para facilitar a configuração do firewall, reduzindo a necessidade de interação manual com o firewalld.
