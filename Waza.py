@@ -144,9 +144,7 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                 print("Interfaces disponíveis:")
               
                 for i, iface in enumerate(interfaces, start=1):
-                  
-                    if iface != 'lo':
-                        print(f"[{i}] {iface}")
+                    print(f"[{i}] {iface}")
               
                 try:
                     print("[0] Voltar ao Menu")
@@ -352,12 +350,20 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
             ##################################################################################################
             ## A MAGICA ACONTECE AQUI! AQUI ESTÁ A CONFIGURAÇÃO FINAL DE TUDO QUE FOI SELECIONADO NO SCRIPT ##
             ##################################################################################################    
+            ## ESTA OPÇÃO CONFIRMA AS ALTERAÇÕES SELECIONADAS, E FAZ ABRE POSSIBILIDADE DE NOVOS AJUSTES ##
+            ###############################################################################################
             elif opcao == "13":
                 try:
+                    ########################################################
+                    ## FAZ A ALTERAÇÃO DA INTERFACE PARA ZONA SELECIONADA ##
+                    ########################################################
                     if seleciona_zona and seleciona_interface:
                         cfg_iface = os.popen(f"firewall-cmd --zone={seleciona_zona} --change-interface={seleciona_interface} --permanent").read()
                         print(f'Configuração da INTERFACE e ZONA: {cfg_iface}')
                         
+                        ##############################################################
+                        ## SE O SERVIÇO ESTIVER SELECIONADO, ELE FAZ A CONFIGURAÇÃO ##
+                        ##############################################################
                         if selected_services_str != None:
                             selected_services_list = selected_services_str.split(', ')
                         
@@ -365,6 +371,9 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                                 cfg_service = os.popen(f"firewall-cmd --add-service={service} --permanent --zone={seleciona_zona}").read()
                                 print(f'Permissão do serviço {service}: {cfg_service}')
                         
+                        ############################################################
+                        ## SE A PORTA ESTIVER SELECIONADA, ELE FAZ A CONFIGURAÇÃO ##
+                        ############################################################
                         if selected_ports_str != None:
                             selected_ports_str = selected_ports_str.split(',')
                            
@@ -375,6 +384,10 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                                     print(f'Porta {port}/tcp liberada: {tcp_port}')
                                     udp_port = os.popen(f"firewall-cmd --add-port={port}/udp --permanent --zone={seleciona_zona}").read()
                                     print(f'Porta {port}/udp liberada: {udp_port}')
+                        
+                        ##########################################################################
+                        ## SE O BLOQUEIO DE SERVIÇO ESTIVER SELECIONADO, ELE FAZ A CONFIGURAÇÃO ##
+                        ##########################################################################
                         if block_selected_services_str != None:
                             block_selected_services_list = block_selected_services_str.split(', ')
                             
@@ -382,6 +395,24 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                                 block_cfg_service = os.popen(f"firewall-cmd --remove-service={block_service} --permanent --zone={seleciona_zona}").read()
                                 print(f'Bloqueio do serviço {block_service}: {block_cfg_service}')
                        
+                        ##########################################################################
+                        ## SE O BLOQUEIO DE SERVIÇO ESTIVER SELECIONADO, ELE FAZ A CONFIGURAÇÃO ##
+                        ##########################################################################
+                        '''
+                        if block_selected_ports_str != None:
+                            block_selected_ports_str = block_selected_ports_str.split(',')
+                           
+                            for block_port in block_selected_ports_str:
+                                
+                                if block_port != 0 or block_port != '':
+                                    block_tcp_port = os.popen(f"firewall-cmd --remove-port={block_port}/tcp --permanent --zone={seleciona_zona}").read()
+                                    print(f'Porta {block_port}/tcp bloqueada: {block_tcp_port}')
+                                    block_udp_port = os.popen(f"firewall-cmd --remove-port={block_port}/udp --permanent --zone={seleciona_zona}").read()
+                                    print(f'Porta {block_port}/udp bloqueada: {block_udp_port}')
+                        '''
+                        #########################################
+                        ## ABRE O MENU DE CONFIGURAÇÕES EXTRAS ##
+                        #########################################
                         try:
                             while True:
                                 print("Configuração manual para a zona:")
@@ -392,6 +423,9 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                                 print("[0] Concluir")
                                 choice = input("Escolha uma opção: ")
                                 
+                                ############################################
+                                ## ABRE O MENU DE CONFIGURÇÃO DE "TARGET" ##
+                                ############################################
                                 if choice == "1":
                                     print('[1] Default')
                                     print("[2] ACCEPT")
@@ -503,13 +537,3 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
 
 
 configure_firewall()
-
-
-
-
-
-
-
-
-
-###########################################################################################################3
