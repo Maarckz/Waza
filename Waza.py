@@ -1,7 +1,7 @@
 ###################################
 ## DEFINIDA A VARIAVEL DA VERSÃO ##
 ###################################
-version = '\033[7;32mv1.2dev\033[m'
+wversion = '\033[7;32mv2.1dev\033[m'
 
 import os
 
@@ -9,7 +9,7 @@ import os
 ## VERIFICA A DISTRO LINUX, INSTALA E HABILITA O FIREWALLD ##
 #############################################################
 def verifica_distro_e_firewall():
-    with open("/etc/os-release", "r") as arquivo: #
+    with open("/etc/os-release", "r") as arquivo: 
         
         for linha in arquivo:
            
@@ -80,7 +80,7 @@ E#jG#f  L#LL#G      j###DW##,      .fW##D,          j###DW##,
 E###;   L###j      G##i,,G##,    .f###D,           G##i,,G##,
 E#K:    L#W;     :K#K:   L##,  .f####Gffffffff;  :K#K:   L##,
 EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
-                                                     \033[m{version}''')
+                                                     \033[m{wversion}''')
             
             print("Opções:\n")
 
@@ -418,14 +418,14 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                                 print("Configuração manual para a zona:")
                                 print('[1] Defina o Target')
                                 print("[2] Bloquear ICMP")
-                                print("[3] Configurar forward")
+                                print("[3] Configurar PortForward")
                                 print("[4] Configurar masquerade")
                                 print("[0] Concluir")
                                 choice = input("Escolha uma opção: ")
                                 
-                                ############################################
-                                ## ABRE O MENU DE CONFIGURÇÃO DE "TARGET" ##
-                                ############################################
+                                #############################################
+                                ## ABRE O MENU DE CONFIGURAÇÃO DE "TARGET" ##
+                                #############################################
                                 if choice == "1":
                                     print('[1] Default')
                                     print("[2] ACCEPT")
@@ -451,7 +451,10 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                                   
                                     else:
                                         print('Digite uma opção válida')
-                              
+
+                                #################################################
+                                ## ABRE O MENU DE CONFIGURAÇÃO DE "ICMP_BLOCK" ##
+                                #################################################
                                 if choice == "2":
                                     icmp_options = {
                                         "Echo-Request": "echo-request",
@@ -487,16 +490,21 @@ EG      LE.     ;##D.    L##, .fLLLLLLLLLLLLi   ;##D.    L##,
                                     except ValueError:
                                         print("Entrada inválida. O número da opção deve ser um número inteiro.")
                                
+                               ###############################################################################
+                               ## CONFIGURA O PORTFORWARD, DIRECIONANDO O TRAFEGO DE UMA PORTA PARA A OUTRA ##
+                               ###############################################################################
                                 elif choice == "3":
-                                    forward_value = input("Deseja habilitar o Forward? (S/N) ")
+                                    forward_sit = input("Deseja configurar o PortForward? (S/N) ")
+                                    if forward_sit.lower() =='s':
+                                        porta_entrada = int(input('Digite a porta de Entrada: '))
+                                        porta_destino = int(input('Digite a porta de Destino: '))
+                                        os.system(f"firewall-cmd --zone={seleciona_zona} --add-forward-port=port={porta_entrada}:proto=tcp:toport={porta_destino}")
+                                        os.system('firewall-cmd --runtim-to-permanent')
+                                        print(f"PortForward configurado ({porta_entrada} >> {porta_destino}).")
                                   
-                                    if forward_value.lower() =='s':
-                                        os.system(f"firewall-cmd --zone={seleciona_zona} --add-forward")
-                                        print(f"Forward configurado para {forward_value}.")
-                                  
-                                    elif forward_value.lower() =='n':
+                                    elif forward_sit.lower() =='n':
                                         os.system(f"firewall-cmd --zone={seleciona_zona} --remove-forward")
-                                        print(f"Forward configurado para {forward_value}.")
+                                        print(f"PortForward removido.")
                                     os.system("firewall-cmd --reload")
 
                                 elif choice == "4":
